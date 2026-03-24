@@ -3,6 +3,8 @@ package darknight1.exceleditor;
 import java.io.*;
 import java.util.*;
 
+import java.nio.file.*;
+
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -33,87 +35,118 @@ public class ExcelEditor {
             System.out.println("0 - Add new Name to file!");
             System.out.println("1 - Add new NickName to file!");
             System.out.println("2 - Add new SurName to file!");
-            System.out.println("3 - Finish editing file!");
+            System.out.println("3 - Export file to somewhere else!");
+            System.out.println("4 - Exit program!");
             System.out.print("//-:");
             
             Scanner scanner = new Scanner(System.in);
             
             int menuOption = scanner.nextInt();
 
-            if(menuOption != 3)
+            if(menuOption <= 2)
             {
-                workbook = new HSSFWorkbook(new FileInputStream(currentProjectPath + "\\ExcelNames.xlsx"));
-                sheet = workbook.getSheetAt(0);
-                
-                List<String> namesAlreadyChosen = new ArrayList<>();
+                while(true)
+                {
+                    workbook = new HSSFWorkbook(new FileInputStream(currentProjectPath + "\\ExcelNames.xlsx"));
+                    
+                    sheet = workbook.getSheetAt(0);
 
-                boolean addingNamesToList = true;
+                    List<String> namesAlreadyChosen = new ArrayList<>();
 
-                int index = 1;
+                    boolean addingNamesToList = true;
 
-                while(addingNamesToList)
-                {                
-                    if(sheet.getRow(index) == null)
-                    {
-                        sheet.createRow(index);
-                        System.out.println("\nNumber of names already found: " + namesAlreadyChosen.size());
-                        break;
-                    }
-                    else
-                    {
-                        if(sheet.getRow(index).getCell(menuOption) != null)
+                    int index = 1;
+
+                    while(addingNamesToList)
+                    {                
+                        if(sheet.getRow(index) == null)
                         {
-                            if(sheet.getRow(index).getCell(menuOption).toString() != "")
-                            {
-                                namesAlreadyChosen.add(sheet.getRow(index).getCell(menuOption).toString());
-                                //System.out.println("\nAdding new name to current number of names list!");
-                            }
+                            sheet.createRow(index);
+                            //System.out.println("\nNumber of names already found: " + namesAlreadyChosen.size());
+                            break;
                         }
                         else
                         {
-                            break;
+                            if(sheet.getRow(index).getCell(menuOption) != null)
+                            {
+                                if(sheet.getRow(index).getCell(menuOption).toString() != "")
+                                {
+                                    namesAlreadyChosen.add(sheet.getRow(index).getCell(menuOption).toString());
+                                    //System.out.println("\nAdding new name to current number of names list!");
+                                }
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+
+                        index++;
+                    }
+
+                    System.out.println("\nType the new name to add or EXIT in full caps to go back to the first menu: ");
+                    System.out.print("//-:");
+
+                    scanner = new Scanner(System.in);
+
+                    String newName = scanner.nextLine();
+
+                    boolean registerNewName = true;
+                    
+                    if(newName.equals("EXIT"))
+                    {
+                        break;
+                    }
+
+                    if(namesAlreadyChosen.size() > 0){
+                        for(int x = 0; x < namesAlreadyChosen.size(); x++){
+                            //System.out.println("Name chosen: " + newName + " | Name to compare: " + namesAlreadyChosen.get(x));
+                            if(newName.equals(namesAlreadyChosen.get(x))){
+                                System.out.println("\nName already on the list!");
+                                registerNewName = false;
+                                break;
+                            }
                         }
                     }
-                        
-                    index++;
-                }
 
-                System.out.println("\nType the new name to add: ");
+                    if(registerNewName){
+                        FileOutputStream fileOut = new FileOutputStream(currentProjectPath + "\\ExcelNames.xlsx");
+
+                        System.out.println("Current index value: " + index);
+
+                        sheet.getRow(index).createCell(menuOption);
+                        sheet.getRow(index).getCell(menuOption).setCellValue(newName);
+
+                        sheet.autoSizeColumn(0);
+                        sheet.autoSizeColumn(1);                       
+                        sheet.autoSizeColumn(2);
+                        
+                        workbook.write(fileOut);
+                        fileOut.close();
+                        workbook.close();
+                    }
+                }
+            }
+            else if(menuOption == 3)
+            {
+                System.out.println("\nType the new path to send the file to: ");
                 System.out.print("//-:");
 
                 scanner = new Scanner(System.in);
 
-                String newName = scanner.nextLine();
-
-                boolean registerNewName = true;
-
-                if(namesAlreadyChosen.size() > 0){
-                    for(int x = 0; x < namesAlreadyChosen.size(); x++){
-                        //System.out.println("Name chosen: " + newName + " | Name to compare: " + namesAlreadyChosen.get(x));
-                        if(newName.equals(namesAlreadyChosen.get(x))){
-                            System.out.println("\nName already on the list!");
-                            registerNewName = false;
-                            break;
-                        }
-                    }
-                }
-
-                if(registerNewName){
-                    FileOutputStream fileOut = new FileOutputStream(currentProjectPath + "\\ExcelNames.xlsx");
-                    
-                    System.out.println("Current index value: " + index);
-                    
-                    sheet.getRow(index).createCell(menuOption);
-                    sheet.getRow(index).getCell(menuOption).setCellValue(newName);
-
-                    workbook.write(fileOut);
-                    fileOut.close();
-                    workbook.close();
-                }
+                String destination = scanner.nextLine();
+                
+                Path destinationPath = Paths.get(destination + "\\ExcelNames.xlsx");
+                
+                Path source = Paths.get(currentProjectPath + "\\ExcelNames.xlsx");
+                
+                System.out.println("Copiando file de: " + source.toString()+ " para: " + destinationPath.toString());
+                
+                Files.copy(source, destinationPath, StandardCopyOption.REPLACE_EXISTING);
             }
             else
             {
-                running = false;
+                running = false;     
             }
         }
     }
