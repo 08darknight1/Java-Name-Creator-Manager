@@ -142,7 +142,7 @@ public class ExcelEditor {
                 
                 FileWriter out = new FileWriter(currentProjectPath + "\\ExcelNames.csv");
                 
-                CSVPrinter csvPrinter = new CSVPrinter(out, CSVFormat.EXCEL);
+                CSVPrinter csvPrinter = new CSVPrinter(out, CSVFormat.DEFAULT.withDelimiter(';'));
                 
                 workbook = new HSSFWorkbook(new FileInputStream(currentProjectPath + "\\ExcelNames.xlsx"));
                 sheet = workbook.getSheetAt(0);
