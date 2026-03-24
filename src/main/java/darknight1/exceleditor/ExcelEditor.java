@@ -11,6 +11,10 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
 
 public class ExcelEditor {
 
@@ -35,7 +39,7 @@ public class ExcelEditor {
             System.out.println("0 - Add new Name to file!");
             System.out.println("1 - Add new NickName to file!");
             System.out.println("2 - Add new SurName to file!");
-            System.out.println("3 - Export file to somewhere else!");
+            System.out.println("3 - Export file to somewhere else as CSV!");
             System.out.println("4 - Exit program!");
             System.out.print("//-:");
             
@@ -136,13 +140,44 @@ public class ExcelEditor {
 
                 String destination = scanner.nextLine();
                 
+                FileWriter out = new FileWriter(currentProjectPath + "\\ExcelNames.csv");
+                
+                CSVPrinter csvPrinter = new CSVPrinter(out, CSVFormat.EXCEL);
+                
+                workbook = new HSSFWorkbook(new FileInputStream(currentProjectPath + "\\ExcelNames.xlsx"));
+                sheet = workbook.getSheetAt(0);
+                
+                if(workbook != null)
+                {
+                    Iterator<Row> rowIterator = sheet.rowIterator();
+                    
+                    while (rowIterator.hasNext())
+                    {
+                        Row row1 = rowIterator.next();
+                        Iterator<Cell> cellIterator = row1.cellIterator();
+                        
+                        while (cellIterator.hasNext())
+                        {
+                            Cell cell = cellIterator.next();
+                            csvPrinter.print(cell.getStringCellValue());
+                        }
+                        
+                        csvPrinter.println();
+                    }
+                }
+                
+                csvPrinter.flush();
+                csvPrinter.close();
+                
                 Path destinationPath = Paths.get(destination + "\\ExcelNames.csv");
                 
-                Path source = Paths.get(currentProjectPath + "\\ExcelNames.xlsx");
+                Path source = Paths.get(currentProjectPath + "\\ExcelNames.csv");
                 
                 System.out.println("Copiando file de: " + source.toString()+ " para: " + destinationPath.toString());
                 
                 Files.copy(source, destinationPath, StandardCopyOption.REPLACE_EXISTING);
+                
+                Files.delete(source);
             }
             else
             {
