@@ -136,7 +136,7 @@ public class ExcelEditor {
 
                 String destination = scanner.nextLine();
                 
-                Path destinationPath = Paths.get(destination + "\\ExcelNames.xlsx");
+                Path destinationPath = Paths.get(destination + "\\ExcelNames.csv");
                 
                 Path source = Paths.get(currentProjectPath + "\\ExcelNames.xlsx");
                 
