@@ -1,4 +1,4 @@
-package darknight1.exceleditor;
+package darknight1.NameCreatorManager;
 
 import java.io.*;
 import java.util.*;
@@ -16,8 +16,8 @@ import org.apache.commons.csv.CSVPrinter;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 
-public class ExcelEditor {
-
+public class NameCreatorManager
+{    
     public static void main(String[] args) throws FileNotFoundException, IOException
     {
         boolean running = true;
@@ -88,7 +88,7 @@ public class ExcelEditor {
                         index++;
                     }
 
-                    System.out.println("\nType the new name to add or EXIT in full caps to go back to the first menu: ");
+                    System.out.println("\nType the new name to add or 0 to go back to the first menu: ");
                     System.out.print("//-:");
 
                     scanner = new Scanner(System.in);
@@ -97,7 +97,7 @@ public class ExcelEditor {
 
                     boolean registerNewName = true;
                     
-                    if(newName.equals("EXIT"))
+                    if(newName.equals("0"))
                     {
                         break;
                     }

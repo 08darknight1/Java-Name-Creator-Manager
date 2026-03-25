@@ -2,9 +2,20 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>08darknight1</groupId>
-    <artifactId>ExcelEditor</artifactId>
+    <artifactId>NameCreatorManager</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
+    <dependencyManagement>
+      <dependencies>
+        <dependency>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-bom</artifactId>
+          <version>2.25.2</version>
+          <scope>import</scope>
+          <type>pom</type>
+        </dependency>
+      </dependencies>
+    </dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>org.apache.poi</groupId>
@@ -24,6 +35,19 @@
             <version>1.14.1</version>
             <type>jar</type>
         </dependency>
+	<!-- Addding the next 2 dependecies to fix the-main ERROR Log4j API could not find a logging provider -->
+ 	<dependency>
+    	    <groupId>org.apache.logging.log4j</groupId>
+    	    <artifactId>log4j-to-jul</artifactId>
+    	    <scope>runtime</scope>
+  	</dependency>
+  	<!-- SLF4J-to-JUL bridge -->
+  	<dependency>
+    	    <groupId>org.slf4j</groupId>
+    	    <artifactId>slf4j-jdk14</artifactId>
+    	    <version>2.0.17</version>
+    	    <scope>runtime</scope>
+  	</dependency>
     </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
