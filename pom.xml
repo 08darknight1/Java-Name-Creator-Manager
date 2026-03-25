@@ -3,23 +3,37 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>08darknight1</groupId>
     <artifactId>NameCreatorManager</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <packaging>jar</packaging>
-    <dependencyManagement>
-      <dependencies>
-        <dependency>
-          <groupId>org.apache.logging.log4j</groupId>
-          <artifactId>log4j-bom</artifactId>
-          <version>2.25.2</version>
-          <scope>import</scope>
-          <type>pom</type>
-        </dependency>
-      </dependencies>
-    </dependencyManagement>
+    <!-- Adding this part of depenency management to fix the ERROR Log4j API could not find a logging provider. -->
+<dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-bom</artifactId>
+      <version>2.25.2</version>
+      <scope>import</scope>
+      <type>pom</type>
+    </dependency>
+  </dependencies>
+</dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
+            <version>5.5.1</version>
+            <type>jar</type>
+        </dependency>
+	<!-- Source: https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml-full -->
+	<dependency>
+    	    <groupId>org.apache.poi</groupId>
+    	    <artifactId>poi-ooxml-full</artifactId>
+    	    <version>5.5.1</version>
+    	    <scope>compile</scope>
+	</dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
             <version>5.5.1</version>
             <type>jar</type>
         </dependency>
@@ -34,24 +48,57 @@
             <artifactId>commons-csv</artifactId>
             <version>1.14.1</version>
             <type>jar</type>
-        </dependency>
-	<!-- Addding the next 2 dependecies to fix the-main ERROR Log4j API could not find a logging provider -->
- 	<dependency>
-    	    <groupId>org.apache.logging.log4j</groupId>
-    	    <artifactId>log4j-to-jul</artifactId>
-    	    <scope>runtime</scope>
-  	</dependency>
-  	<!-- SLF4J-to-JUL bridge -->
+	</dependency>
+    <!-- Addinng this next dependency to fix the ERROR Log4j API could not find a logging provider. -->
   	<dependency>
-    	    <groupId>org.slf4j</groupId>
-    	    <artifactId>slf4j-jdk14</artifactId>
-    	    <version>2.0.17</version>
+    	    <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-to-jul</artifactId>
     	    <scope>runtime</scope>
   	</dependency>
     </dependencies>
+    <!-- Next things here in build to try and make the fucking JAR open outside netbeans without getting: java.lang.NoClassDefFoundError: org/apache/poi/ss/usermodel/Font -->
+<build>
+    <plugins>
+        <!-- Maven Shade Plugin -->
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <version>3.5.0</version> <!-- Use a recent version -->
+            <executions>
+                <execution>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>shade</goal>
+                    </goals>
+                    <configuration>
+                        <transformers>
+                            <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                <!-- Replace 'com.yourpackage.MainClass' with your actual main class -->
+                                <mainClass>darknight1.project.NameCreatorManager</mainClass>
+                            </transformer>
+                        </transformers>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+	<plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <version>3.5.0</version> <!-- Use an appropriate version -->
+            <configuration>
+                <archive>
+                    <manifest>
+                        <addClasspath>true</addClasspath>
+                        <mainClass>darknight1.project.NameCreatorManager</mainClass> <!-- Replace with your main class -->
+                    </manifest>
+                </archive>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>25</maven.compiler.release>
-        <exec.mainClass>darknight1.exceleditor.ExcelEditor</exec.mainClass>
+        <exec.mainClass>darknight1.project.NameCreatorManager</exec.mainClass>
     </properties>
 </project>
