@@ -24,5 +24,8 @@ These will stay in the drawing board for now as to not hinder the development of
 
 - To use it, you just need to download the zip, extract it somewhere, open the target folder and run the .jar file;
 
-- Made using JAVA in the Netbeans IDE:<img width="15" height="20" alt="image" src="https://github.com/user-attachments/assets/076f99d6-eaec-4241-9228-7dc29d98b688"/>
+
+
+- Made using JAVA in the Netbeans IDE <img align="top" src="https://github.com/user-attachments/assets/076f99d6-eaec-4241-9228-7dc29d98b688" alt="Alt Text" style="width:2%; height:auto;">
+
 
